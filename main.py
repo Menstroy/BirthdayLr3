@@ -12,3 +12,7 @@ class BirthdayReminder:
 
     def get_upcoming_birthdays(self, days=30):
         return self.friends  # Заглушка
+
+    def save_to_file(self, filename):
+        with open(filename, 'w') as f:
+            f.write("test")  # Просто записываем что-то в файл
