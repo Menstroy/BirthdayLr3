@@ -1,9 +1,13 @@
-from datetime import date
+from datetime import datetime, date
 class BirthdayReminder:
     def __init__(self):
         self.friends = []
 
     def add_friend(self, name, birthday):
+        try:
+            datetime.strptime(birthday, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("Дата должна быть в формате YYYY-MM-DD")
         self.friends.append({"name": name, "birthday": birthday})
 
     def get_today_birthdays(self):
