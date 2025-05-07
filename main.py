@@ -1,4 +1,5 @@
 from datetime import datetime, date
+import json
 class BirthdayReminder:
     def __init__(self):
         self.friends = []
@@ -36,8 +37,9 @@ class BirthdayReminder:
         return sorted(upcoming, key=lambda x: x["days_until"])
 
     def save_to_file(self, filename):
-        with open(filename, 'w') as f:
-            f.write("test")  # Просто записываем что-то в файл
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(self.friends, f, ensure_ascii=False, indent=2)
 
     def load_from_file(self, filename):
-        self.friends = [{"name": "Тест", "birthday": "2000-01-01"}]  # Заглушка
+        with open(filename, encoding='utf-8') as f:
+            self.friends = json.load(f)
