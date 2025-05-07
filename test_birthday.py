@@ -40,5 +40,21 @@ class TestBirthdayReminder(unittest.TestCase):
             self.assertGreater(os.path.getsize(filename), 0)
         finally:
             os.unlink(filename)
+
+
+    def test_load_from_file(self):
+        br = BirthdayReminder()
+
+        # Создаем тестовый файл с данными
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
+            tmp.write('[{"name": "Тест", "birthday": "2000-01-01"}]')
+            filename = tmp.name
+
+        try:
+            br.load_from_file(filename)
+            self.assertEqual(len(br.friends), 1)
+            self.assertEqual(br.friends[0]["name"], "Тест")
+        finally:
+            os.unlink(filename)
 if __name__ == '__main__':
     unittest.main()
