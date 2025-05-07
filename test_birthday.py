@@ -1,5 +1,7 @@
 # test_birthday.py
 import unittest
+import tempfile
+import os
 from main import BirthdayReminder
 from datetime import date, timedelta
 class TestBirthdayReminder(unittest.TestCase):
@@ -24,5 +26,19 @@ class TestBirthdayReminder(unittest.TestCase):
         br.add_friend("Ближайший", future_date)
         upcoming = br.get_upcoming_birthdays(7)
         self.assertEqual(len(upcoming), 1)
+
+    def test_save_to_file(self):
+        br = BirthdayReminder()
+        br.add_friend("Тест", "2000-01-01")
+
+        with tempfile.NamedTemporaryFile(delete=False) as tmp:
+            filename = tmp.name
+
+        try:
+            br.save_to_file(filename)
+            self.assertTrue(os.path.exists(filename))
+            self.assertGreater(os.path.getsize(filename), 0)
+        finally:
+            os.unlink(filename)
 if __name__ == '__main__':
     unittest.main()
