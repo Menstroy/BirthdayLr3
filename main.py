@@ -15,7 +15,25 @@ class BirthdayReminder:
         return [f for f in self.friends if f["birthday"][5:] == today]
 
     def get_upcoming_birthdays(self, days=30):
-        return self.friends  # Заглушка
+        today = date.today()
+        upcoming = []
+
+        for friend in self.friends:
+            bday = datetime.strptime(friend["birthday"], "%Y-%m-%d").date()
+            bday_this_year = bday.replace(year=today.year)
+
+            if bday_this_year < today:
+                bday_this_year = bday_this_year.replace(year=today.year + 1)
+
+            delta = (bday_this_year - today).days
+            if 0 <= delta <= days:
+                upcoming.append({
+                    "name": friend["name"],
+                    "date": bday_this_year.strftime("%Y-%m-%d"),
+                    "days_until": delta
+                })
+
+        return sorted(upcoming, key=lambda x: x["days_until"])
 
     def save_to_file(self, filename):
         with open(filename, 'w') as f:
