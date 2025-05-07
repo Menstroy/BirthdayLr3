@@ -16,3 +16,6 @@ class BirthdayReminder:
     def save_to_file(self, filename):
         with open(filename, 'w') as f:
             f.write("test")  # Просто записываем что-то в файл
+
+    def load_from_file(self, filename):
+        self.friends = [{"name": "Тест", "birthday": "2000-01-01"}]  # Заглушка
