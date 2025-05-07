@@ -1,5 +1,8 @@
-from datetime import datetime, date
 import json
+import argparse
+from datetime import datetime, date, timedelta
+
+
 class BirthdayReminder:
     def __init__(self):
         self.friends = []
@@ -43,3 +46,51 @@ class BirthdayReminder:
     def load_from_file(self, filename):
         with open(filename, encoding='utf-8') as f:
             self.friends = json.load(f)
+
+
+def main():
+    br = BirthdayReminder()
+    parser = argparse.ArgumentParser()
+
+    # Автозагрузка по умолчанию
+    if os.path.exists("birthdays.json"):
+        br.load_from_file("birthdays.json")
+
+    parser.add_argument('--add', nargs=2, metavar=('NAME', 'DATE'))
+    parser.add_argument('--today', action='store_true')
+    parser.add_argument('--upcoming', type=int, default=30)
+
+    args = parser.parse_args()
+
+    if args.add:
+        name, bday = args.add
+        try:
+            br.add_friend(name, bday)
+            br.save_to_file("birthdays.json")  # Автосохранение
+            print(f"Добавлен: {name}")
+        except ValueError as e:
+            print(f"Ошибка: {e}")
+
+    if args.today:
+        today = br.get_today_birthdays()
+        if today:
+            print("Сегодня день рождения у:")
+            for friend in today:
+                print(f" - {friend['name']}")
+        else:
+            print("Сегодня дней рождения нет")
+
+    if args.upcoming:
+        upcoming = br.get_upcoming_birthdays(args.upcoming)
+        if upcoming:
+            print(f"Ближайшие дни рождения ({args.upcoming} дней):")
+            for friend in upcoming:
+                print(f" - {friend['name']} ({friend['date'][5:]}, через {friend['days_until']} дней)")
+        else:
+            print(f"Нет дней рождения в ближайшие {args.upcoming} дней")
+
+
+if __name__ == '__main__':
+    import os
+
+    main()
